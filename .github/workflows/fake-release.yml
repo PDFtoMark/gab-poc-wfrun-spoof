@@ -5,4 +5,4 @@ jobs:
   fake:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "forged Release Workflow from fork PR"
+      - run: echo "forged Release Workflow run 2"
