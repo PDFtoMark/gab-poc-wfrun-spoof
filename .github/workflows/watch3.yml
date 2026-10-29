@@ -1,0 +1,19 @@
+name: Watcher3
+on:
+  workflow_run:
+    workflows: ["Release Workflow"]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  w:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "PRIVILEGED_DOWNSTREAM_RAN=true"
+          echo "trigger_event=${{ github.event.workflow_run.event }}"
+          echo "trigger_head_branch=${{ github.event.workflow_run.head_branch }}"
+          echo "trigger_head_repo=${{ github.event.workflow_run.head_repository.full_name }}"
+          echo "trigger_actor=${{ github.event.workflow_run.actor.login }}"
+          echo "env_ref=${{ github.ref }}"
