@@ -1,0 +1,25 @@
+name: runid-downstream
+on:
+  workflow_run:
+    workflows: [runid-upstream]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CUR: ${{ github.run_id }}
+          UP: ${{ github.event.workflow_run.id }}
+        run: |
+          echo "current_run_id=$CUR"
+          echo "upstream_run_id=$UP"
+          echo "--- artifacts of current run:"
+          gh api "repos/$REPO/actions/runs/$CUR/artifacts" --jq '.artifacts[].name' || echo "none/err"
+          echo "--- artifacts of upstream run:"
+          gh api "repos/$REPO/actions/runs/$UP/artifacts" --jq '.artifacts[].name' || echo "none/err"
